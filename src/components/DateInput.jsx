@@ -47,6 +47,7 @@ export default class DateInput extends React.Component {
 
     this.onChange = this.onChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.dateFormat = this.dateFormat.bind(this);
   }
 
   componentDidMount() {
@@ -73,9 +74,13 @@ export default class DateInput extends React.Component {
     }
   }
 
+  dateFormat(el) {
+    value = el.replace(/^([\d]{2})([\d]{2})([\d]{4})$/,"$1/$2/$3");
+    return value;
+  }
+
   onChange(e) {
     const dateString = e.target.value;
-
     this.setState({ dateString });
     this.props.onChange(dateString);
   }
@@ -83,6 +88,9 @@ export default class DateInput extends React.Component {
   onKeyDown(e) {
     const { onKeyDownShiftTab, onKeyDownTab } = this.props;
     if (e.key === 'Tab') {
+      this.setState({
+        dateString: this.dateFormat(this.state.dateString)
+      });
       if (e.shiftKey) {
         onKeyDownShiftTab(e);
       } else {
