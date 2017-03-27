@@ -142,7 +142,6 @@ export default class DateRangePickerInputWithHandlers extends React.Component {
 
   onStartDateChange(startDateString) {
     const startDate = toMomentObject(startDateString, this.getDisplayFormat()) || startDateString && startDateString.length === 8 ? moment(startDateString) : null;
-
     let { endDate } = this.props;
     const { isOutsideRange, onDatesChange, onFocusChange } = this.props;
     const isStartDateValid = startDate && !isOutsideRange(startDate);

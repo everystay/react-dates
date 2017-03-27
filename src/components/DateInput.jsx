@@ -88,7 +88,9 @@ export default class DateInput extends React.Component {
   onKeyDown(e) {
     const { onKeyDownShiftTab, onKeyDownTab } = this.props;
     if (e.key === 'Tab') {
-      this.props.onChange(this.state.dateString);
+      if (this.state.dateString) {
+        this.props.onChange(dateString);
+      }
       if (e.shiftKey) {
         onKeyDownShiftTab(e);
       } else {
