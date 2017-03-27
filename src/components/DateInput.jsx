@@ -91,6 +91,7 @@ export default class DateInput extends React.Component {
       this.setState({
         dateString: this.dateFormat(this.state.dateString)
       });
+      this.props.onChange(dateString);
       if (e.shiftKey) {
         onKeyDownShiftTab(e);
       } else {
