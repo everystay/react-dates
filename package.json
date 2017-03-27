@@ -1,6 +1,6 @@
 {
-  "name": "react-dates",
-  "version": "8.2.1",
+  "name": "react-dates-everystay",
+  "version": "0.0.1",
   "description": "A responsive and accessible date range picker component built with React",
   "main": "index.js",
   "scripts": {
