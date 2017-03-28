@@ -47,7 +47,6 @@ export default class DateInput extends React.Component {
 
     this.onChange = this.onChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
-    this.dateFormat = this.dateFormat.bind(this);
   }
 
   componentDidMount() {
@@ -72,11 +71,6 @@ export default class DateInput extends React.Component {
     } else {
       this.inputRef.blur();
     }
-  }
-
-  dateFormat(el) {
-    value = el.replace(/^([\d]{4})([\d]{2})([\d]{2})$/,"$3.$2.$1");
-    return value;
   }
 
   onChange(e) {
