@@ -2,10 +2,6 @@ import React, { PropTypes } from 'react';
 import moment from 'moment';
 
 import momentPropTypes from 'react-moment-proptypes';
-import { forbidExtraProps } from 'airbnb-prop-types';
-
-import { DateRangePickerInputPhrases } from '../defaultPhrases';
-import getPhrasePropTypes from '../utils/getPhrasePropTypes';
 
 import DateRangePickerInput from './DateRangePickerInput';
 
@@ -18,7 +14,7 @@ import isInclusivelyBeforeDay from '../utils/isInclusivelyBeforeDay';
 
 import { START_DATE, END_DATE } from '../../constants';
 
-const propTypes = forbidExtraProps({
+const propTypes = {
   startDate: momentPropTypes.momentObj,
   startDateId: PropTypes.string,
   startDatePlaceholderText: PropTypes.string,
@@ -47,11 +43,12 @@ const propTypes = forbidExtraProps({
 
   customInputIcon: PropTypes.node,
   customArrowIcon: PropTypes.node,
-  customCloseIcon: PropTypes.node,
 
   // i18n
-  phrases: PropTypes.shape(getPhrasePropTypes(DateRangePickerInputPhrases)),
-});
+  phrases: PropTypes.shape({
+    clearDates: PropTypes.node,
+  }),
+};
 
 const defaultProps = {
   startDate: null,
@@ -82,10 +79,11 @@ const defaultProps = {
 
   customInputIcon: null,
   customArrowIcon: null,
-  customCloseIcon: null,
 
   // i18n
-  phrases: DateRangePickerInputPhrases,
+  phrases: {
+    clearDates: 'Clear Dates',
+  },
 };
 
 export default class DateRangePickerInputWithHandlers extends React.Component {
@@ -114,6 +112,7 @@ export default class DateRangePickerInputWithHandlers extends React.Component {
     } = this.props;
 
     const endDate = toMomentObject(endDateString, this.getDisplayFormat());
+
     const isEndDateValid = endDate && !isOutsideRange(endDate) &&
       !isInclusivelyBeforeDay(endDate, startDate);
     if (isEndDateValid) {
@@ -142,6 +141,7 @@ export default class DateRangePickerInputWithHandlers extends React.Component {
 
   onStartDateChange(startDateString) {
     const startDate = toMomentObject(startDateString, this.getDisplayFormat());
+
     let { endDate } = this.props;
     const { isOutsideRange, onDatesChange, onFocusChange } = this.props;
     const isStartDateValid = startDate && !isOutsideRange(startDate);
@@ -203,7 +203,6 @@ export default class DateRangePickerInputWithHandlers extends React.Component {
       showDefaultInputIcon,
       customInputIcon,
       customArrowIcon,
-      customCloseIcon,
       disabled,
       required,
       phrases,
@@ -232,7 +231,6 @@ export default class DateRangePickerInputWithHandlers extends React.Component {
         showDefaultInputIcon={showDefaultInputIcon}
         customInputIcon={customInputIcon}
         customArrowIcon={customArrowIcon}
-        customCloseIcon={customCloseIcon}
         phrases={phrases}
         onStartDateChange={this.onStartDateChange}
         onStartDateFocus={this.onStartDateFocus}

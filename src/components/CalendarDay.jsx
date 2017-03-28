@@ -1,11 +1,10 @@
 import React, { PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import momentPropTypes from 'react-moment-proptypes';
-import { forbidExtraProps } from 'airbnb-prop-types';
 import moment from 'moment';
 import cx from 'classnames';
 
-const propTypes = forbidExtraProps({
+const propTypes = {
   day: momentPropTypes.momentObj,
   isOutsideDay: PropTypes.bool,
   modifiers: PropTypes.object,
@@ -13,7 +12,7 @@ const propTypes = forbidExtraProps({
   onDayMouseEnter: PropTypes.func,
   onDayMouseLeave: PropTypes.func,
   renderDay: PropTypes.func,
-});
+};
 
 const defaultProps = {
   day: moment(),

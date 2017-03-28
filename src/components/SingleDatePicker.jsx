@@ -2,10 +2,6 @@ import React from 'react';
 import moment from 'moment';
 import cx from 'classnames';
 import Portal from 'react-portal';
-import { forbidExtraProps } from 'airbnb-prop-types';
-import { addEventListener, removeEventListener } from 'consolidated-events';
-
-import { SingleDatePickerPhrases } from '../defaultPhrases';
 
 import OutsideClickHandler from './OutsideClickHandler';
 import toMomentObject from '../utils/toMomentObject';
@@ -30,51 +26,49 @@ import {
   ANCHOR_RIGHT,
 } from '../../constants';
 
-const propTypes = forbidExtraProps(SingleDatePickerShape);
+const propTypes = SingleDatePickerShape;
 
 const defaultProps = {
-  // required props for a functional interactive SingleDatePicker
   date: null,
   focused: false,
-
-  // input related props
-  id: 'date',
-  placeholder: 'Date',
   disabled: false,
   required: false,
-  screenReaderInputMessage: '',
   showClearDate: false,
-  customCloseIcon: null,
+  reopenPickerOnClearDate: false,
+  keepOpenOnDateSelect: false,
 
-  // calendar presentation and interaction related props
+  navPrev: null,
+  navNext: null,
+
+  onDateChange() {},
+  onFocusChange() {},
+
+  isDayBlocked: () => false,
+  isDayHighlighted: () => false,
+  disabledDays: [],
+  isOutsideRange: day => !isInclusivelyAfterDay(day, moment()),
+  enableOutsideDays: false,
+  numberOfMonths: 2,
   orientation: HORIZONTAL_ORIENTATION,
   anchorDirection: ANCHOR_LEFT,
   horizontalMargin: 0,
   withPortal: false,
   withFullScreenPortal: false,
-  initialVisibleMonth: null,
-  numberOfMonths: 2,
-  keepOpenOnDateSelect: false,
-  reopenPickerOnClearDate: false,
-  renderCalendarInfo: null,
+  screenReaderInputMessage: '',
+  initialVisibleMonth: () => moment(),
 
-  // navigation related props
-  navPrev: null,
-  navNext: null,
   onPrevMonthClick() {},
   onNextMonthClick() {},
 
-  // day presentation and interaction related props
   renderDay: null,
-  enableOutsideDays: false,
-  isDayBlocked: () => false,
-  isOutsideRange: day => !isInclusivelyAfterDay(day, moment()),
-  isDayHighlighted: () => {},
 
-  // internationalization props
+  // i18n
   displayFormat: () => moment.localeData().longDateFormat('L'),
   monthFormat: 'MMMM YYYY',
-  phrases: SingleDatePickerPhrases,
+  phrases: {
+    closeDatePicker: 'Close',
+    clearDate: 'Clear Date',
+  },
 };
 
 export default class SingleDatePicker extends React.Component {
@@ -101,12 +95,7 @@ export default class SingleDatePicker extends React.Component {
 
   /* istanbul ignore next */
   componentDidMount() {
-    this.resizeHandle = addEventListener(
-      window,
-      'resize',
-      this.responsivizePickerPosition,
-      { passive: true },
-    );
+    window.addEventListener('resize', this.responsivizePickerPosition);
     this.responsivizePickerPosition();
   }
 
@@ -122,7 +111,7 @@ export default class SingleDatePicker extends React.Component {
 
   /* istanbul ignore next */
   componentWillUnmount() {
-    removeEventListener(this.resizeHandle);
+    window.removeEventListener('resize', this.responsivizePickerPosition);
   }
 
   onChange(dateString) {
@@ -294,11 +283,8 @@ export default class SingleDatePicker extends React.Component {
       withPortal,
       withFullScreenPortal,
       focused,
-      renderDay,
-      renderCalendarInfo,
-      date,
       initialVisibleMonth,
-      customCloseIcon,
+      renderDay,
     } = this.props;
     const { dayPickerContainerStyles } = this.state;
 
@@ -313,9 +299,9 @@ export default class SingleDatePicker extends React.Component {
       selected: day => this.isSelected(day),
     };
 
-    const onOutsideClick = (!withFullScreenPortal && withPortal) ? this.onClearFocus : undefined;
-    const initialVisibleMonthThunk = initialVisibleMonth || (() => (date || moment()));
-    const closeIcon = customCloseIcon || (<CloseButton />);
+    const onOutsideClick = (!withFullScreenPortal && withPortal)
+      ? this.onClearFocus
+      : undefined;
 
     return (
       <div
@@ -336,15 +322,14 @@ export default class SingleDatePicker extends React.Component {
           monthFormat={monthFormat}
           withPortal={withPortal || withFullScreenPortal}
           hidden={!focused}
-          initialVisibleMonth={initialVisibleMonthThunk}
+          initialVisibleMonth={initialVisibleMonth}
           onOutsideClick={onOutsideClick}
           navPrev={navPrev}
           navNext={navNext}
           renderDay={renderDay}
-          renderCalendarInfo={renderCalendarInfo}
         />
 
-        {withFullScreenPortal && (
+        {withFullScreenPortal &&
           <button
             className="SingleDatePicker__close"
             type="button"
@@ -353,11 +338,9 @@ export default class SingleDatePicker extends React.Component {
             <span className="screen-reader-only">
               {this.props.phrases.closeDatePicker}
             </span>
-            <div className="SingleDatePicker__close-icon">
-              {closeIcon}
-            </div>
+            <CloseButton />
           </button>
-        )}
+        }
       </div>
     );
   }

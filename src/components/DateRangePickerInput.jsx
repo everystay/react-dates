@@ -1,9 +1,5 @@
 import React, { PropTypes } from 'react';
-import { forbidExtraProps } from 'airbnb-prop-types';
 import cx from 'classnames';
-
-import { DateRangePickerInputPhrases } from '../defaultPhrases';
-import getPhrasePropTypes from '../utils/getPhrasePropTypes';
 
 import DateInput from './DateInput';
 import RightArrow from '../svg/arrow-right.svg';
@@ -12,7 +8,7 @@ import CalendarIcon from '../svg/calendar.svg';
 
 import { START_DATE, END_DATE } from '../../constants';
 
-const propTypes = forbidExtraProps({
+const propTypes = {
   startDateId: PropTypes.string,
   startDatePlaceholderText: PropTypes.string,
   screenReaderMessage: PropTypes.string,
@@ -42,11 +38,12 @@ const propTypes = forbidExtraProps({
   showDefaultInputIcon: PropTypes.bool,
   customInputIcon: PropTypes.node,
   customArrowIcon: PropTypes.node,
-  customCloseIcon: PropTypes.node,
 
   // i18n
-  phrases: PropTypes.shape(getPhrasePropTypes(DateRangePickerInputPhrases)),
-});
+  phrases: PropTypes.shape({
+    clearDates: PropTypes.node,
+  }),
+};
 
 const defaultProps = {
   startDateId: START_DATE,
@@ -76,10 +73,11 @@ const defaultProps = {
   showDefaultInputIcon: false,
   customInputIcon: null,
   customArrowIcon: null,
-  customCloseIcon: null,
 
   // i18n
-  phrases: DateRangePickerInputPhrases,
+  phrases: {
+    clearDates: 'Clear Dates',
+  },
 };
 
 export default class DateRangePickerInput extends React.Component {
@@ -133,13 +131,11 @@ export default class DateRangePickerInput extends React.Component {
       showDefaultInputIcon,
       customInputIcon,
       customArrowIcon,
-      customCloseIcon,
       phrases,
     } = this.props;
 
     const inputIcon = customInputIcon || (<CalendarIcon />);
     const arrowIcon = customArrowIcon || (<RightArrow />);
-    const closeIcon = customCloseIcon || (<CloseButton />);
 
     return (
       <div
@@ -147,17 +143,14 @@ export default class DateRangePickerInput extends React.Component {
           'DateRangePickerInput--disabled': disabled,
         })}
       >
-        {(showDefaultInputIcon || customInputIcon !== null) && (
-          <button
-            type="button"
-            aria-label={phrases.focusStartDate}
+        {(showDefaultInputIcon || customInputIcon !== null) &&
+          <span
             className="DateRangePickerInput__calendar-icon"
             onClick={onStartDateFocus}
           >
             {inputIcon}
-          </button>
-        )}
-
+          </span>
+        }
         <DateInput
           id={startDateId}
           placeholder={startDatePlaceholderText}
@@ -194,7 +187,7 @@ export default class DateRangePickerInput extends React.Component {
           onKeyDownTab={onEndDateTab}
         />
 
-        {showClearDates && (
+        {showClearDates &&
           <button
             type="button"
             className={cx('DateRangePickerInput__clear-dates', {
@@ -208,11 +201,9 @@ export default class DateRangePickerInput extends React.Component {
             <span className="screen-reader-only">
               {phrases.clearDates}
             </span>
-            <div className="DateRangePickerInput__close-icon">
-              {closeIcon}
-            </div>
+            <CloseButton />
           </button>
-        )}
+        }
       </div>
     );
   }

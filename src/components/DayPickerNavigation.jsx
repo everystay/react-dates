@@ -1,9 +1,5 @@
 import React, { PropTypes } from 'react';
-import { forbidExtraProps } from 'airbnb-prop-types';
 import cx from 'classnames';
-
-import { DayPickerNavigationPhrases } from '../defaultPhrases';
-import getPhrasePropTypes from '../utils/getPhrasePropTypes';
 
 import LeftArrow from '../svg/arrow-left.svg';
 import RightArrow from '../svg/arrow-right.svg';
@@ -16,18 +12,14 @@ import {
   VERTICAL_SCROLLABLE,
 } from '../../constants';
 
-const propTypes = forbidExtraProps({
+const propTypes = {
   navPrev: PropTypes.node,
   navNext: PropTypes.node,
   orientation: ScrollableOrientationShape,
 
   onPrevMonthClick: PropTypes.func,
   onNextMonthClick: PropTypes.func,
-
-  // internationalization
-  phrases: PropTypes.shape(getPhrasePropTypes(DayPickerNavigationPhrases)),
-});
-
+};
 const defaultProps = {
   navPrev: null,
   navNext: null,
@@ -35,9 +27,6 @@ const defaultProps = {
 
   onPrevMonthClick() {},
   onNextMonthClick() {},
-
-  // internationalization
-  phrases: DayPickerNavigationPhrases,
 };
 
 export default function DayPickerNavigation(props) {
@@ -47,7 +36,6 @@ export default function DayPickerNavigation(props) {
     onPrevMonthClick,
     onNextMonthClick,
     orientation,
-    phrases,
   } = props;
 
   const isVertical = orientation !== HORIZONTAL_ORIENTATION;
@@ -80,18 +68,16 @@ export default function DayPickerNavigation(props) {
 
   return (
     <div className={navClassNames}>
-      {!isVerticalScrollable && (
+      {!isVerticalScrollable &&
         <span
-          aria-label={phrases.jumpToPrevMonth}
           className={prevClassNames}
           onClick={onPrevMonthClick}
         >
           {navPrevIcon}
         </span>
-      )}
+      }
 
       <span
-        aria-label={phrases.jumpToNextMonth}
         className={nextClassNames}
         onClick={onNextMonthClick}
       >

@@ -1,10 +1,9 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import shallowCompare from 'react-addons-shallow-compare';
 import momentPropTypes from 'react-moment-proptypes';
-import { forbidExtraProps } from 'airbnb-prop-types';
 import moment from 'moment';
 import cx from 'classnames';
-import { addEventListener, removeEventListener } from 'consolidated-events';
 
 import CalendarMonth from './CalendarMonth';
 
@@ -19,7 +18,7 @@ import {
   VERTICAL_SCROLLABLE,
 } from '../../constants';
 
-const propTypes = forbidExtraProps({
+const propTypes = {
   enableOutsideDays: PropTypes.bool,
   firstVisibleMonthIndex: PropTypes.number,
   initialMonth: momentPropTypes.momentObj,
@@ -36,7 +35,7 @@ const propTypes = forbidExtraProps({
 
   // i18n
   monthFormat: PropTypes.string,
-});
+};
 
 const defaultProps = {
   enableOutsideDays: false,
@@ -61,7 +60,7 @@ function getMonths(initialMonth, numberOfMonths) {
   let month = initialMonth.clone().subtract(1, 'month');
 
   const months = [];
-  for (let i = 0; i < numberOfMonths + 2; i += 1) {
+  for (let i = 0; i < numberOfMonths + 2; i++) {
     months.push(month);
     month = month.clone().add(1, 'month');
   }
@@ -81,11 +80,8 @@ export default class CalendarMonthGrid extends React.Component {
   }
 
   componentDidMount() {
-    this.eventHandle = addEventListener(
-      this.container,
-      'transitionend',
-      this.onTransitionEnd,
-    );
+    this.container = ReactDOM.findDOMNode(this.containerRef);
+    this.container.addEventListener('transitionend', this.onTransitionEnd);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -130,7 +126,7 @@ export default class CalendarMonthGrid extends React.Component {
   }
 
   componentWillUnmount() {
-    removeEventListener(this.eventHandle);
+    this.container.removeEventListener('transitionend', this.onTransitionEnd);
   }
 
   onTransitionEnd() {
@@ -166,7 +162,7 @@ export default class CalendarMonthGrid extends React.Component {
 
     return (
       <div
-        ref={(ref) => { this.container = ref; }}
+        ref={(ref) => { this.containerRef = ref; }}
         className={className}
         style={getTransformStyles(transformValue)}
         onTransitionEnd={onMonthTransitionEnd}

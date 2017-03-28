@@ -64,15 +64,6 @@ describe('DayPicker', () => {
       });
     });
 
-    describe('renderCalendarInfo', () => {
-      it('info exists', () => {
-        const testInfoClass = 'test-info-container';
-        const infoElement = <div className={testInfoClass} />;
-        const wrapper = shallow(<DayPicker renderCalendarInfo={() => infoElement} />);
-        expect(wrapper.find(`.${testInfoClass}`)).to.have.lengthOf(1);
-      });
-    });
-
     describe('CalendarMonthGrid', () => {
       it('component exists', () => {
         const wrapper = shallow(<DayPicker />);

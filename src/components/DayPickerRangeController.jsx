@@ -1,10 +1,6 @@
 import React, { PropTypes } from 'react';
 import momentPropTypes from 'react-moment-proptypes';
-import { forbidExtraProps } from 'airbnb-prop-types';
 import moment from 'moment';
-
-import { DayPickerPhrases } from '../defaultPhrases';
-import getPhrasePropTypes from '../utils/getPhrasePropTypes';
 
 import isTouchDevice from '../utils/isTouchDevice';
 
@@ -23,7 +19,7 @@ import {
 
 import DayPicker from './DayPicker';
 
-const propTypes = forbidExtraProps({
+const propTypes = {
   startDate: momentPropTypes.momentObj,
   endDate: momentPropTypes.momentObj,
   onDatesChange: PropTypes.func,
@@ -42,6 +38,7 @@ const propTypes = forbidExtraProps({
   numberOfMonths: PropTypes.number,
   orientation: ScrollableOrientationShape,
   withPortal: PropTypes.bool,
+  hidden: PropTypes.bool,
   initialVisibleMonth: PropTypes.func,
 
   navPrev: PropTypes.node,
@@ -51,12 +48,10 @@ const propTypes = forbidExtraProps({
   onNextMonthClick: PropTypes.func,
   onOutsideClick: PropTypes.func,
   renderDay: PropTypes.func,
-  renderCalendarInfo: PropTypes.func,
 
   // i18n
   monthFormat: PropTypes.string,
-  phrases: PropTypes.shape(getPhrasePropTypes(DayPickerPhrases)),
-});
+};
 
 const defaultProps = {
   startDate: undefined, // TODO: use null
@@ -77,6 +72,7 @@ const defaultProps = {
   numberOfMonths: 1,
   orientation: HORIZONTAL_ORIENTATION,
   withPortal: false,
+  hidden: false,
 
   initialVisibleMonth: () => moment(),
 
@@ -88,11 +84,9 @@ const defaultProps = {
   onOutsideClick() {},
 
   renderDay: null,
-  renderCalendarInfo: null,
 
   // i18n
   monthFormat: 'MMMM YYYY',
-  phrases: DayPickerPhrases,
 };
 
 export default class DayPickerRangeController extends React.Component {
@@ -246,7 +240,6 @@ export default class DayPickerRangeController extends React.Component {
       initialVisibleMonth,
       focusedInput,
       renderDay,
-      renderCalendarInfo,
     } = this.props;
 
     const modifiers = {
@@ -291,7 +284,6 @@ export default class DayPickerRangeController extends React.Component {
         navPrev={navPrev}
         navNext={navNext}
         renderDay={renderDay}
-        renderCalendarInfo={renderCalendarInfo}
       />
     );
   }

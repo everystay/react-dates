@@ -2,9 +2,6 @@ import React, { PropTypes } from 'react';
 import { forbidExtraProps } from 'airbnb-prop-types';
 import cx from 'classnames';
 
-import { SingleDatePickerInputPhrases } from '../defaultPhrases';
-import getPhrasePropTypes from '../utils/getPhrasePropTypes';
-
 import DateInput from './DateInput';
 import CloseButton from '../svg/close.svg';
 
@@ -19,7 +16,6 @@ const propTypes = forbidExtraProps({
   required: PropTypes.bool,
   showCaret: PropTypes.bool,
   showClearDate: PropTypes.bool,
-  customCloseIcon: PropTypes.node,
 
   onChange: PropTypes.func,
   onClearDate: PropTypes.func,
@@ -28,7 +24,9 @@ const propTypes = forbidExtraProps({
   onKeyDownTab: PropTypes.func,
 
   // i18n
-  phrases: PropTypes.shape(getPhrasePropTypes(SingleDatePickerInputPhrases)),
+  phrases: PropTypes.shape({
+    clearDate: PropTypes.node,
+  }),
 });
 
 const defaultProps = {
@@ -41,7 +39,6 @@ const defaultProps = {
   required: false,
   showCaret: false,
   showClearDate: false,
-  customCloseIcon: null,
 
   onChange() {},
   onClearDate() {},
@@ -50,7 +47,9 @@ const defaultProps = {
   onKeyDownTab() {},
 
   // i18n
-  phrases: SingleDatePickerInputPhrases,
+  phrases: {
+    clearDate: 'Clear Date',
+  },
 };
 
 export default class SingleDatePickerInput extends React.Component {
@@ -95,10 +94,7 @@ export default class SingleDatePickerInput extends React.Component {
       onKeyDownShiftTab,
       onKeyDownTab,
       screenReaderMessage,
-      customCloseIcon,
     } = this.props;
-
-    const closeIcon = customCloseIcon || (<CloseButton />);
 
     return (
       <div className="SingleDatePickerInput">
@@ -119,23 +115,23 @@ export default class SingleDatePickerInput extends React.Component {
           onKeyDownTab={onKeyDownTab}
         />
 
-        {showClearDate && (
+        {showClearDate &&
           <button
             type="button"
             className={cx('SingleDatePickerInput__clear-date', {
               'SingleDatePickerInput__clear-date--hide': !displayValue,
               'SingleDatePickerInput__clear-date--hover': isClearDateHovered,
             })}
-            aria-label={phrases.clearDate}
             onMouseEnter={this.onClearDateMouseEnter}
             onMouseLeave={this.onClearDateMouseLeave}
             onClick={onClearDate}
           >
-            <div className="DateRangePickerInput__close">
-              {closeIcon}
-            </div>
+            <span className="screen-reader-only">
+              {phrases.clearDate}
+            </span>
+            <CloseButton />
           </button>
-        )}
+        }
       </div>
     );
   }
