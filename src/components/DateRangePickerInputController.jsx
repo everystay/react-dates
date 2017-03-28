@@ -2,6 +2,10 @@ import React, { PropTypes } from 'react';
 import moment from 'moment';
 
 import momentPropTypes from 'react-moment-proptypes';
+import { forbidExtraProps } from 'airbnb-prop-types';
+
+import { DateRangePickerInputPhrases } from '../defaultPhrases';
+import getPhrasePropTypes from '../utils/getPhrasePropTypes';
 
 import DateRangePickerInput from './DateRangePickerInput';
 
@@ -14,7 +18,7 @@ import isInclusivelyBeforeDay from '../utils/isInclusivelyBeforeDay';
 
 import { START_DATE, END_DATE } from '../../constants';
 
-const propTypes = {
+const propTypes = forbidExtraProps({
   startDate: momentPropTypes.momentObj,
   startDateId: PropTypes.string,
   startDatePlaceholderText: PropTypes.string,
@@ -43,12 +47,11 @@ const propTypes = {
 
   customInputIcon: PropTypes.node,
   customArrowIcon: PropTypes.node,
+  customCloseIcon: PropTypes.node,
 
   // i18n
-  phrases: PropTypes.shape({
-    clearDates: PropTypes.node,
-  }),
-};
+  phrases: PropTypes.shape(getPhrasePropTypes(DateRangePickerInputPhrases)),
+});
 
 const defaultProps = {
   startDate: null,
@@ -79,11 +82,10 @@ const defaultProps = {
 
   customInputIcon: null,
   customArrowIcon: null,
+  customCloseIcon: null,
 
   // i18n
-  phrases: {
-    clearDates: 'Clear Dates',
-  },
+  phrases: DateRangePickerInputPhrases,
 };
 
 export default class DateRangePickerInputWithHandlers extends React.Component {
@@ -111,8 +113,7 @@ export default class DateRangePickerInputWithHandlers extends React.Component {
       onFocusChange,
     } = this.props;
 
-    const endDate = toMomentObject(endDateString, this.getDisplayFormat());
-
+    const endDate = toMomentObject(endDateString, this.getDisplayFormat()) || endDateString && endDateString.length === 8 ? moment(endDateString) : null;
     const isEndDateValid = endDate && !isOutsideRange(endDate) &&
       !isInclusivelyBeforeDay(endDate, startDate);
     if (isEndDateValid) {
@@ -140,8 +141,7 @@ export default class DateRangePickerInputWithHandlers extends React.Component {
   }
 
   onStartDateChange(startDateString) {
-    const startDate = toMomentObject(startDateString, this.getDisplayFormat());
-
+    const startDate = toMomentObject(startDateString, this.getDisplayFormat()) || startDateString && startDateString.length === 8 ? moment(startDateString) : null;
     let { endDate } = this.props;
     const { isOutsideRange, onDatesChange, onFocusChange } = this.props;
     const isStartDateValid = startDate && !isOutsideRange(startDate);
@@ -203,6 +203,7 @@ export default class DateRangePickerInputWithHandlers extends React.Component {
       showDefaultInputIcon,
       customInputIcon,
       customArrowIcon,
+      customCloseIcon,
       disabled,
       required,
       phrases,
@@ -231,6 +232,7 @@ export default class DateRangePickerInputWithHandlers extends React.Component {
         showDefaultInputIcon={showDefaultInputIcon}
         customInputIcon={customInputIcon}
         customArrowIcon={customArrowIcon}
+        customCloseIcon={customCloseIcon}
         phrases={phrases}
         onStartDateChange={this.onStartDateChange}
         onStartDateFocus={this.onStartDateFocus}

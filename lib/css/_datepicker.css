@@ -92,7 +92,8 @@
     pointer-events: none; }
   .CalendarMonth table {
     border-collapse: collapse;
-    border-spacing: 0; }
+    border-spacing: 0;
+    caption-caption-side: initial; }
 
 .CalendarMonth--horizontal {
   display: inline-block;
@@ -106,7 +107,8 @@
   margin-top: 7px;
   font-size: 18px;
   text-align: center;
-  margin-bottom: 2px; }
+  margin-bottom: 2px;
+  caption-side: initial; }
 
 .CalendarMonth--horizontal .CalendarMonth__caption,
 .CalendarMonth--vertical .CalendarMonth__caption {
