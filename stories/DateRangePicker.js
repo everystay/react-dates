@@ -50,7 +50,7 @@ class TestWrapper extends React.Component {
 
 storiesOf('DateRangePicker (DRP)', module)
   .addWithInfo('default', () => (
-    <DateRangePickerWrapper />
+    <DateRangePickerWrapper displayFormat={'DD-MM-YYYY'} />
   ))
   .addWithInfo('hidden with display: none', () => (
     <TestWrapper />
